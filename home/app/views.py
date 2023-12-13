@@ -64,7 +64,6 @@ class ProjectViewset(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            print(profile.role)
             if profile.role == "MA":
                 queryset = Project.objects.all()
             else:
@@ -137,7 +136,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            print(profile.role)
             if profile.role == "MA":
                 queryset = Task.objects.all()
             else:
@@ -149,15 +147,36 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        if profile.role == "MA":
+            pass
+        else:
+            return Response(
+                {"message": "user cant create task"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                {"data": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        if profile.role == "MA":
+            pass
+        else:
+            return Response(
+                {"message": "user cant create task"},
+                status=status.HTTP_403_FORBIDDEN
+            )
         instance = self.get_object()
         data = request.data.copy()
         serializer = self.get_serializer(instance, data=data, partial=partial)
@@ -202,7 +221,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         else:
             return Response(
                 {"status": False, "message": "you dont have acess rights"},
-                status.HTTP_406_NOT_ACCEPTABLE,
+                status.HTTP_403_FORBIDDEN,
             )
 
 
@@ -214,7 +233,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            print(profile.role)
             if profile.role == "MA":
                 queryset = Document.objects.all()
             else:
@@ -228,7 +246,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
-        print(data)
         serializer = self.get_serializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -256,7 +273,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            print(profile.role)
             if profile.role == "MA":
                 queryset = Comment.objects.all()
             else:
@@ -275,7 +291,10 @@ class CommentViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                {"data": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
@@ -287,15 +306,17 @@ class CommentViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                {"data": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         user = request.user
         profile = Profile.objects.get(user=user)
         if instance.author == profile:
-            print(instance.author)
             instance.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)

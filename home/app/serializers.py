@@ -57,8 +57,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         depth = 1
 
     def validate(self, data):
-        print(Profile.Roles.choices)
-        print(data)
         if data.get("role", None):
             if data["role"] != "QA" and data["role"] != "MA":
                 if data["role"] != "DEV":
@@ -68,7 +66,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         if data["contact_number"]:
             if len(data["contact_number"]) > 12:
-                raise serializers.ValidationError("number not right lenght")
+                raise serializers.ValidationError("number not right length")
 
         return data
 
