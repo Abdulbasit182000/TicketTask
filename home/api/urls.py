@@ -1,5 +1,5 @@
-from app.views import (CommentViewSet, DocumentViewSet, LoginAPI,
-                       ProjectViewset, RegisterAPI, TaskViewSet)
+from app.views import (CommentViewSet, DocumentViewSet, ProjectViewset,
+                       RegisterAPI, TaskViewSet)
 from django.urls import include, path
 from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
                                    SpectacularSwaggerView)
@@ -18,8 +18,6 @@ urlpatterns = [
     path("", include(router.urls)),
     # Register API
     path("register/", RegisterAPI.as_view()),
-    path("login/", LoginAPI.as_view()),
-    path("auth/", include("rest_framework.urls", namespace="rest-framework")),
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     # DRF Spectacular URLs

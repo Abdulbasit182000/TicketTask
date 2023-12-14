@@ -3,48 +3,27 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Comment, CustomUser, Document, Profile, Project, Task
+from .models import Comment, Document, Profile, Project, Task
 from .permissions import IsManager
 from .serializers import (CommentSerializer, DocumentSerializer,
-                          LoginSerializer, ProjectSerializer,
-                          RegisterSerializer, TaskSerializer)
+                          ProjectSerializer, RegisterSerializer,
+                          TaskSerializer)
 
 
 class RegisterAPI(APIView):
     def post(self, request):
         data = request.data
         serializer = RegisterSerializer(data=data)
-        if not serializer.is_valid():
+        if serializer.is_valid():
+            serializer.save()
             return Response(
-                {"status": False, "message": serializer.errors},
-                status.HTTP_400_BAD_REQUEST,
-            )
-        serializer.save()
+                {"status": True, "message": "Profile Created"},
+                status.HTTP_201_CREATED,
+                )
         return Response(
-            {"status": True, "message": "Profile Created"},
-            status.HTTP_201_CREATED,
-        )
-
-
-class LoginAPI(APIView):
-    def post(self, request):
-        data = request.data
-        serializer = LoginSerializer(data=data)
-        if not serializer.is_valid():
-            return Response(
                 {"status": False, "message": serializer.errors},
                 status.HTTP_400_BAD_REQUEST,
-            )
-        else:
-            user = CustomUser.objects.get(email=serializer.data["email"])
-            refresh = RefreshToken.for_user(user)
-            return Response(
-                {
-                    "refresh": str(refresh),
-                    "access": str(refresh.access_token),
-                }
             )
 
 
@@ -64,7 +43,7 @@ class ProjectViewset(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == "MA":
+            if profile.role == 'MA':
                 queryset = Project.objects.all()
             else:
                 queryset = Project.objects.filter(team_members__user=user)
@@ -95,15 +74,22 @@ class ProjectViewset(viewsets.ModelViewSet):
     def add_member(self, request, pk):
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == "MA":
+        if profile.role == 'MA':
             emails = request.data.get("emails", [])
             instance = self.get_object()
             for email in emails:
-                profile = Profile.objects.get(user__email=email)
-                if instance.team_members.filter(id=profile.id).exists():
-                    pass
+                profile = Profile.objects.filter(user__email=email)
+                if profile:
+                    profile = profile.first()
+                    if instance.team_members.filter(id=profile.id).exists():
+                        pass
+                    else:
+                        instance.team_members.add(profile)
                 else:
-                    instance.team_members.add(profile)
+                    return Response(
+                        {"status": False, "message": "profile not exist"},
+                        status.HTTP_400_BAD_REQUEST,
+                    )
             instance.save()
             return Response(
                 {"status": True, "message": "Team members added"},
@@ -132,7 +118,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == "MA":
+            if profile.role == 'MA':
                 queryset = Task.objects.all()
             else:
                 queryset = Task.objects.filter(assignee__user=user)
@@ -145,7 +131,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         data = request.data
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == "MA":
+        if profile.role == 'MA':
             pass
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
@@ -161,11 +147,14 @@ class TaskViewSet(viewsets.ModelViewSet):
         partial = kwargs.pop("partial", False)
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == "MA":
+        if profile.role == 'MA':
             pass
         instance = self.get_object()
-        data = request.data.copy()
-        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial
+            )
 
         if serializer.is_valid():
             serializer.save()
@@ -177,28 +166,37 @@ class TaskViewSet(viewsets.ModelViewSet):
     def assign(self, request, pk):
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == "MA":
+        if profile.role == 'MA':
             emails = request.data.get("emails", [])
             instance = self.get_object()
             for email in emails:
-                profile = Profile.objects.get(user__email=email)
-                if instance.assignee.filter(id=profile.id).exists():
-                    pass
-                else:
-                    project_mails = instance.project.team_members.values_list(
-                        "user__email", flat=True
-                    )
-                    if email in project_mails:
-                        instance.assignee.add(profile)
+                profile = Profile.objects.filter(user__email=email)
+                if profile:
+                    profile = profile.first()
+                    if instance.assignee.filter(id=profile.id).exists():
+                        pass
                     else:
-                        return Response(
-                            {
-                                "status": False,
-                                "message": "inccorect users",
-                            },
-                            status.HTTP_400_BAD_REQUEST,
+                        p = instance.project.team_members.values_list(
+                            "user__email", flat=True
                         )
-
+                        if email in p:
+                            instance.assignee.add(profile)
+                        else:
+                            return Response(
+                                {
+                                    "status": False,
+                                    "message": "inccorect users",
+                                },
+                                status.HTTP_400_BAD_REQUEST,
+                            )
+                else:
+                    return Response(
+                        {
+                            "status": False,
+                            "message": "inccorect users",
+                        },
+                        status.HTTP_400_BAD_REQUEST,
+                    )
             instance.save()
             return Response(
                 {"status": True, "message": "assignee added"},
@@ -214,7 +212,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == "MA":
+            if profile.role == 'MA':
                 queryset = Document.objects.all()
             else:
                 queryset = Document.objects.filter(
@@ -237,8 +235,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-        data = request.data.copy()
-        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial
+            )
 
         if serializer.is_valid():
             serializer.save()
@@ -254,7 +255,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == "MA":
+            if profile.role == 'MA':
                 queryset = Comment.objects.all()
             else:
                 queryset = Comment.objects.filter(

@@ -4,39 +4,36 @@ from .models import Comment, CustomUser, Document, Profile, Project, Task
 
 
 class UserSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    email = serializers.EmailField()
-    password = serializers.CharField()
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
 
     def validate(self, data):
-        if data["email"]:
-            if CustomUser.objects.filter(email=data["email"]).exists():
-                raise serializers.ValidationError("email is taken")
+        if CustomUser.objects.filter(email=data["email"]).exists():
+            raise serializers.ValidationError("email is taken")
 
-        if data["username"]:
-            if CustomUser.objects.filter(username=data["username"]).exists():
-                raise serializers.ValidationError("username is taken")
+        if CustomUser.objects.filter(username=data["username"]).exists():
+            raise serializers.ValidationError("username is taken")
 
-        if data["password"]:
-            x = data["password"]
-            l, u, p, d = 0, 0, 0, 0
-            if len(x) >= 8:
-                for i in x:
-                    if i.islower():
-                        l += 1
-                    if i.isupper():
-                        u += 1
-                    if i.isdigit():
-                        d += 1
-                    if i == "@" or i == "$" or i == "_":
-                        p += 1
-            w = l + p + u + d
-            if l >= 1 and u >= 1 and p >= 1 and d >= 1 and w == len(x):
-                pass
-            else:
-                raise serializers.ValidationError(
-                    "Password Does not match the requirements"
-                )
+        x = data["password"]
+        arr = [0, 0, 0, 0]
+        if len(x) >= 8:
+            for i in x:
+                if i.islower():
+                    arr[0] += 1
+                if i.isupper():
+                    arr[1] += 1
+                if i.isdigit():
+                    arr[2] += 1
+                if i == "@" or i == "$" or i == "_":
+                    arr[3] += 1
+        w = sum(arr)
+        if min(arr) > 0 and w == len(x):
+            pass
+        else:
+            raise serializers.ValidationError(
+                "Password Does not match the requirements"
+            )
         return data
 
     def create(self, validated_data):
@@ -49,22 +46,20 @@ class UserSerializer(serializers.Serializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(required=True)
 
     class Meta:
         model = Profile
         fields = ["user", "role", "contact_number"]
         depth = 1
+        extra_kwargs = {
+            'role': {'required': True},
+            'contact_number': {'required': True},
+        }
 
     def validate(self, data):
-        if data.get("role", None):
-            pass
-        else:
-            raise serializers.ValidationError("Role is required")
-
-        if data["contact_number"]:
-            if len(data["contact_number"]) > 12:
-                raise serializers.ValidationError("number not right length")
+        if len(data["contact_number"]) > 12:
+            raise serializers.ValidationError("number not right length")
 
         return data
 
@@ -73,24 +68,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = UserSerializer().create(user_data)
         Profile.objects.create(user=user, **validated_data)
         return validated_data
-
-
-class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField()
-
-    def validate(self, data):
-        if data["email"]:
-            if CustomUser.objects.filter(email=data["email"]).exists():
-                user = CustomUser.objects.get(email=data["email"])
-                if data["password"]:
-                    if user.check_password(data["password"]):
-                        pass
-                    else:
-                        raise serializers.ValidationError("incorrect password")
-            else:
-                raise serializers.ValidationError("Email does not exist")
-        return data
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -103,13 +80,9 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         exclude = ["assignee"]
-
-    def validate(self, data):
-        status = data.get("status", None)
-
-        if not status:
-            raise serializers.ValidationError("Status is required")
-        return data
+        extra_kwargs = {
+            'status': {'required': True},
+        }
 
 
 class DocumentSerializer(serializers.ModelSerializer):
