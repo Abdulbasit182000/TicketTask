@@ -38,6 +38,13 @@ class TestAPI(APITestCase):
         self.project.team_members.add(self.profile)
         self.project.save()
 
+        self.project1 = Project.objects.create(
+            title="test project 2",
+            description="test description 2",
+        )
+        self.project1.team_members.add(self.profile1)
+        self.project1.save()
+
         self.task = Task.objects.create(
             title="test task",
             description="test task description",
@@ -154,6 +161,18 @@ class TestAPI(APITestCase):
         response = self.client.post(self.register, data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_register_user_role_required_fail(self):
+        data = {
+            "user": {
+                "username": "abdul3",
+                "email": "abdul3@gmail.com",
+                "password": "R@m@_f0rtu9e$",
+            },
+            "contact_number": "123456789",
+        }
+        response = self.client.post(self.register, data=data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_register_user_contact_fail(self):
         data = {
             "user": {
@@ -190,13 +209,22 @@ class TestAPI(APITestCase):
             status.HTTP_403_FORBIDDEN
             )
 
-    def test_get_all_projects(self):
+    def test_get_all_projects_manager(self):
         data = {
             "title": "My Project",
             "description": "This is a test project",
             "team_members": [1],
         }
         response = self.client.get('/api/projects/', data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_all_projects_user(self):
+        data = {
+            "title": "My Project",
+            "description": "This is a test project",
+            "team_members": [1],
+        }
+        response = self.client1.get('/api/projects/', data=data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_project_detail(self):
@@ -237,7 +265,29 @@ class TestAPI(APITestCase):
         response = self.client1.delete(f'/api/projects/{self.project.id}/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_create_task(self):
+    def test_add_member_project(self):
+        data = {
+            "emails": ["abdul4@gmail.com"]
+        }
+        response = self.client.post(
+            f'/api/projects/{self.project1.id}/add_member/',
+            data=data,
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_add_member_project_fail(self):
+        data = {
+            "emails": ["abdul4@gmail.com"]
+        }
+        response = self.client1.post(
+            f'/api/projects/{self.project1.id}/add_member/',
+            data=data,
+            format='json'
+            )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_task_manager(self):
         data = {
             "title": "Task for project id 1",
             "description": "the description of this task",
@@ -247,11 +297,30 @@ class TestAPI(APITestCase):
         response = self.client.post('/api/tasks/', data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_create_task_user(self):
+        data = {
+            "title": "Task for project id 1",
+            "description": "the description of this task",
+            "status": "OP",
+            "project": 1
+        }
+        response = self.client1.post('/api/tasks/', data=data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_create_task_status_fail(self):
         data = {
             "title": "Task for project id 1",
             "description": "the description of this task",
             "status": "WP",
+            "project": 1
+        }
+        response = self.client.post('/api/tasks/', data=data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_task_status_required_fail(self):
+        data = {
+            "title": "Task for project id 1",
+            "description": "the description of this task",
             "project": 1
         }
         response = self.client.post('/api/tasks/', data=data, format="json")
@@ -267,8 +336,12 @@ class TestAPI(APITestCase):
         response = self.client1.post('/api/tasks/', data=data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_get_all_tasks(self):
+    def test_get_all_tasks_manager(self):
         response = self.client.get('/api/tasks/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_all_tasks_user(self):
+        response = self.client1.get('/api/tasks/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_task_detail(self):
@@ -289,20 +362,6 @@ class TestAPI(APITestCase):
             )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_update_task_detail_user_fail(self):
-        data = {
-            "title": "Task for project id 1 updated",
-            "description": "the description of this task updated",
-            "status": "OP",
-            "project": 1
-        }
-        response = self.client1.put(
-            f'/api/tasks/{self.task.id}/',
-            data=data,
-            format='json'
-            )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
     def test_delete_task(self):
         response = self.client.delete(f'/api/tasks/{self.task.id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
@@ -321,17 +380,6 @@ class TestAPI(APITestCase):
             format='json'
             )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_add_assignee_task_user_fail(self):
-        data = {
-            "emails": ['abdul4@gmail.com']
-        }
-        response = self.client1.post(
-            f'/api/tasks/{self.task.id}/assign/',
-            data=data,
-            format='json'
-            )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_add_assignee_task_assign_fail(self):
         data = {
@@ -363,6 +411,10 @@ class TestAPI(APITestCase):
 
     def test_get_all_documents(self):
         response = self.client.get('/api/documents/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_all_documents_user(self):
+        response = self.client1.get('/api/documents/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_document_detail(self):
@@ -422,8 +474,26 @@ class TestAPI(APITestCase):
         response = self.client.get('/api/comments/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_get_all_comments_user(self):
+        response = self.client1.get('/api/comments/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_get_comment_detail(self):
         response = self.client.get(f'/api/comments/{self.comment.id}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_comment(self):
+        data = {
+            "text": "This task looks complicated updated",
+            "author": 1,
+            "task": 1,
+            "project": 1
+        }
+        response = self.client.put(
+            f'/api/comments/{self.comment.id}/',
+            data=data,
+            format="json"
+            )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_comment_fail(self):

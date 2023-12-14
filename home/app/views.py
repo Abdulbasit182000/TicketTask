@@ -79,8 +79,6 @@ class ProjectViewset(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
@@ -92,8 +90,6 @@ class ProjectViewset(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
 
     @action(detail=True, methods=["post"])
     def add_member(self, request, pk):
@@ -116,7 +112,7 @@ class ProjectViewset(viewsets.ModelViewSet):
         else:
             return Response(
                 {"status": False, "message": "you dont have acess rights"},
-                status.HTTP_406_NOT_ACCEPTABLE,
+                status.HTTP_403_FORBIDDEN,
             )
 
 
@@ -151,11 +147,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         profile = Profile.objects.get(user=user)
         if profile.role == "MA":
             pass
-        else:
-            return Response(
-                {"message": "user cant create task"},
-                status=status.HTTP_403_FORBIDDEN
-            )
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -172,11 +163,6 @@ class TaskViewSet(viewsets.ModelViewSet):
         profile = Profile.objects.get(user=user)
         if profile.role == "MA":
             pass
-        else:
-            return Response(
-                {"message": "user cant create task"},
-                status=status.HTTP_403_FORBIDDEN
-            )
         instance = self.get_object()
         data = request.data.copy()
         serializer = self.get_serializer(instance, data=data, partial=partial)
@@ -217,11 +203,6 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Response(
                 {"status": True, "message": "assignee added"},
                 status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                {"status": False, "message": "you dont have acess rights"},
-                status.HTTP_403_FORBIDDEN,
             )
 
 

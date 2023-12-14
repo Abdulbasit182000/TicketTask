@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     "debug_toolbar",
     'drf_spectacular',
+    # 'django_nose',
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,5 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+COVERAGE_REPORT_HTML_OUTPUT_DIR = 'htmlcov'

@@ -58,9 +58,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if data.get("role", None):
-            if data["role"] != "QA" and data["role"] != "MA":
-                if data["role"] != "DEV":
-                    raise serializers.ValidationError("Role is not correct")
+            pass
         else:
             raise serializers.ValidationError("Role is required")
 
@@ -111,12 +109,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
         if not status:
             raise serializers.ValidationError("Status is required")
-
-        valid_statuses = ["OP", "REV", "WOR", "AWAIT", "WAIT"]
-
-        if status not in valid_statuses:
-            raise serializers.ValidationError("Status is not correct")
-
         return data
 
 
