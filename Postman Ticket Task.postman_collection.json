@@ -1,0 +1,957 @@
+{
+	"info": {
+		"_postman_id": "45c2357a-40fe-4b1e-bc91-bbf709bc4304",
+		"name": "Postman Ticket Task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25954472"
+	},
+	"item": [
+		{
+			"name": "RegisterAPI",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user\": {\n    \"username\": \"abdul3\",\n    \"email\": \"abdul3@gmail.com\",\n    \"password\": \"R@m@_f0rtu9e$\"\n  },\n  \"role\": \"DEV\",\n  \"contact_number\": \"123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/register/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LoginAPI",
+			"item": [
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"abdul@gmail.com\",\n    \"password\" : \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/login/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ProjectAPI",
+			"item": [
+				{
+					"name": "creating new project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDU0MzY1LCJpYXQiOjE3MDIzNjc5NjUsImp0aSI6IjM3YTVkZjRjZThiNzQyMzI5YTVlOThhMTY0NGU5M2NiIiwidXNlcl9pZCI6MX0.6saplEZk7pZV2Qb9VcurDx3q2W68CaSLoHkEgAYefPU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"My Project\",\n  \"description\": \"This is a test project\",\n  \"team_members\": [1,2]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/projects/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"projects",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list of all projects",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDU0MzY1LCJpYXQiOjE3MDIzNjc5NjUsImp0aSI6IjM3YTVkZjRjZThiNzQyMzI5YTVlOThhMTY0NGU5M2NiIiwidXNlcl9pZCI6MX0.6saplEZk7pZV2Qb9VcurDx3q2W68CaSLoHkEgAYefPU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/projects/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"projects",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Specific Task Detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDU0MzY1LCJpYXQiOjE3MDIzNjc5NjUsImp0aSI6IjM3YTVkZjRjZThiNzQyMzI5YTVlOThhMTY0NGU5M2NiIiwidXNlcl9pZCI6MX0.6saplEZk7pZV2Qb9VcurDx3q2W68CaSLoHkEgAYefPU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/projects/16/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"projects",
+								"16",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update project details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDU0MzY1LCJpYXQiOjE3MDIzNjc5NjUsImp0aSI6IjM3YTVkZjRjZThiNzQyMzI5YTVlOThhMTY0NGU5M2NiIiwidXNlcl9pZCI6MX0.6saplEZk7pZV2Qb9VcurDx3q2W68CaSLoHkEgAYefPU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Man Project updated again\",\n    \"description\": \"Still test project edit my manager updated again\",\n    \"team_members\": [\n        1,\n        2,\n        5\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/projects/1/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"projects",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDU0MzY1LCJpYXQiOjE3MDIzNjc5NjUsImp0aSI6IjM3YTVkZjRjZThiNzQyMzI5YTVlOThhMTY0NGU5M2NiIiwidXNlcl9pZCI6MX0.6saplEZk7pZV2Qb9VcurDx3q2W68CaSLoHkEgAYefPU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/projects/16/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"projects",
+								"16",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TaskAPI",
+			"item": [
+				{
+					"name": "Create new task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"title\": \"Task for project id 1\",\n \"description\": \"the description of this task\",\n \"status\": \"OP\",\n \"project\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get details of a task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/9/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								"9",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 9,\n    \"title\": \"project id 1 with status\",\n    \"description\": \"the description of this task\",\n    \"status\": \"AWAIT\",\n    \"project\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/9/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								"9",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Task",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/10/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								"10",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add assignee",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"emails\": [\"abdul@gmail.com\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/tasks/9/assign/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"tasks",
+								"9",
+								"assign",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DocumentAPI",
+			"item": [
+				{
+					"name": "creating a document",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "document Test",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "this is the description",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/abdulbasit/Desktop/Office/Django_Prac/TicketTask/doc2.txt"
+								},
+								{
+									"key": "version",
+									"value": "1.0",
+									"type": "text"
+								},
+								{
+									"key": "project",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/documents/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"documents",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updating document",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "document Test",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "this is the description updated",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/abdulbasit/Desktop/Office/Django_Prac/TicketTask/doc2.txt"
+								},
+								{
+									"key": "version",
+									"value": "1.0",
+									"type": "text"
+								},
+								{
+									"key": "project",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/documents/13/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"documents",
+								"13",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list all documents",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/documents/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"documents",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get document detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/documents/13/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"documents",
+								"13",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleting document",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/documents/14/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"documents",
+								"14",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CommentAPI",
+			"item": [
+				{
+					"name": "creating new comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\n    \"text\": \"This task looks complicated\",\n    \"author\": 1,\n    \"task\": 4,\n    \"project\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/comments/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"comments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List of comments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/comments/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"comments",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Details of comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/comments/8/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"comments",
+								"8",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updating a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 7,\n    \"text\": \"This task looks complicated updated\",\n    \"created_at\": \"2023-12-12T11:46:36.572979Z\",\n    \"author\": 1,\n    \"task\": 4,\n    \"project\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/comments/7/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"comments",
+								"7",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleting a comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAyNDY2MDI2LCJpYXQiOjE3MDIzNzk2MjYsImp0aSI6IjZkZTNmMjIyZWQ3ZTQ4MGNhMWYyYTI0MDMyNjk0Y2Y5IiwidXNlcl9pZCI6MX0.eTX6iEb3rDRRGHzPzdC4dPEhZu9ONByyT-f8YpU6W4M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/comments/8/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"comments",
+								"8",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
