@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from .models import Comment, Document, Profile, Project, Task
 from .permissions import IsManager
 from .serializers import (CommentSerializer, DocumentSerializer,
-                          ProjectSerializer, RegisterSerializer,
-                          TaskSerializer)
+                          ProfileSerializer, ProjectSerializer,
+                          RegisterSerializer, TaskSerializer)
 
 
 class RegisterAPI(APIView):
@@ -20,11 +20,37 @@ class RegisterAPI(APIView):
             return Response(
                 {"status": True, "message": "Profile Created"},
                 status.HTTP_201_CREATED,
-                )
-        return Response(
-                {"status": False, "message": serializer.errors},
-                status.HTTP_400_BAD_REQUEST,
             )
+        return Response(
+            {"status": False, "message": serializer.errors},
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+
+class ProfileViewSet(viewsets.ModelViewSet):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        if self.action in ["list"]:
+            user = self.request.user
+            profile = Profile.objects.filter(user=user)
+            queryset = profile
+        else:
+            profile = Profile.objects.all()
+            queryset = profile
+        return queryset
+
+    def retrieve(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ProjectViewset(viewsets.ModelViewSet):
@@ -43,7 +69,7 @@ class ProjectViewset(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == 'MA':
+            if profile.role == "MA":
                 queryset = Project.objects.all()
             else:
                 queryset = Project.objects.filter(team_members__user=user)
@@ -54,6 +80,7 @@ class ProjectViewset(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
+        print(data)
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -63,8 +90,9 @@ class ProjectViewset(viewsets.ModelViewSet):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(
-            instance, data=request.data, partial=partial
-        )
+         instance,
+         data=request.data,
+         partial=partial)
 
         if serializer.is_valid():
             serializer.save()
@@ -74,7 +102,7 @@ class ProjectViewset(viewsets.ModelViewSet):
     def add_member(self, request, pk):
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == 'MA':
+        if profile.role == "MA":
             emails = request.data.get("emails", [])
             instance = self.get_object()
             for email in emails:
@@ -101,6 +129,30 @@ class ProjectViewset(viewsets.ModelViewSet):
                 status.HTTP_403_FORBIDDEN,
             )
 
+    @action(detail=True, methods=["get"])
+    def task(self, request, pk):
+        instance = self.get_object()
+        tasks = Task.objects.filter(project=instance)
+        page = self.paginate_queryset(tasks)
+        if page is not None:
+            serrializer = TaskSerializer(page, many=True)
+            return self.get_paginated_response(serrializer.data)
+
+        serrializer = TaskSerializer(tasks, many=True)
+        return Response(serrializer.data)
+
+    @action(detail=True, methods=["get"])
+    def document(self, request, pk):
+        instance = self.get_object()
+        documents = Document.objects.filter(project=instance)
+        page = self.paginate_queryset(documents)
+        if page is not None:
+            serrializer = DocumentSerializer(page, many=True)
+            return self.get_paginated_response(serrializer.data)
+
+        serrializer = DocumentSerializer(documents, many=True)
+        return Response(serrializer.data)
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
@@ -118,7 +170,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == 'MA':
+            if profile.role == "MA":
                 queryset = Task.objects.all()
             else:
                 queryset = Task.objects.filter(assignee__user=user)
@@ -131,7 +183,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         data = request.data
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == 'MA':
+        if profile.role == "MA":
             pass
         serializer = self.get_serializer(data=data)
         if serializer.is_valid():
@@ -139,22 +191,21 @@ class TaskViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(
-                {"data": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
+                {"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
     def update(self, request, *args, **kwargs):
+        print(request.data)
         partial = kwargs.pop("partial", False)
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == 'MA':
+        if profile.role == "MA":
             pass
         instance = self.get_object()
         serializer = self.get_serializer(
             instance,
             data=request.data,
-            partial=partial
-            )
+            partial=partial)
 
         if serializer.is_valid():
             serializer.save()
@@ -166,7 +217,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def assign(self, request, pk):
         user = request.user
         profile = Profile.objects.get(user=user)
-        if profile.role == 'MA':
+        if profile.role == "MA":
             emails = request.data.get("emails", [])
             instance = self.get_object()
             for email in emails:
@@ -203,6 +254,18 @@ class TaskViewSet(viewsets.ModelViewSet):
                 status.HTTP_200_OK,
             )
 
+    @action(detail=True, methods=["get"])
+    def comment(self, request, pk):
+        instance = self.get_object()
+        comments = Comment.objects.filter(task=instance)
+        page = self.paginate_queryset(comments)
+        if page is not None:
+            serrializer = CommentSerializer(page, many=True)
+            return self.get_paginated_response(serrializer.data)
+
+        serrializer = CommentSerializer(comments, many=True)
+        return Response(serrializer.data)
+
 
 class DocumentViewSet(viewsets.ModelViewSet):
     serializer_class = DocumentSerializer
@@ -212,12 +275,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == 'MA':
+            if profile.role == "MA":
                 queryset = Document.objects.all()
             else:
                 queryset = Document.objects.filter(
-                    project__team_members__user=user
-                )
+                    project__team_members__user=user)
         else:
             queryset = Document.objects.all()
 
@@ -225,6 +287,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
     def create(self, request):
         data = request.data
+        print(data)
         serializer = self.get_serializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -238,8 +301,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(
             instance,
             data=request.data,
-            partial=partial
-            )
+            partial=partial)
 
         if serializer.is_valid():
             serializer.save()
@@ -255,12 +317,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         if self.action in ["list", "retrieve"]:
             user = self.request.user
             profile = Profile.objects.get(user=user)
-            if profile.role == 'MA':
+            if profile.role == "MA":
                 queryset = Comment.objects.all()
             else:
                 queryset = Comment.objects.filter(
-                    project__team_members__user=user
-                    )
+                    project__team_members__user=user)
         else:
             queryset = Comment.objects.all()
 
@@ -274,23 +335,22 @@ class CommentViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(
-                {"data": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
+                {"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(
-            instance, data=request.data, partial=partial
-        )
+            instance,
+            data=request.data,
+            partial=partial)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(
-                {"data": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST
+                {"data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
             )
 
     def destroy(self, request, *args, **kwargs):
