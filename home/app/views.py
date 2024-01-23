@@ -57,13 +57,16 @@ class ProjectViewset(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list", "retrieve", "document", "task"]:
             permission_classes = [IsAuthenticated]
+            print('done')
 
         else:
             permission_classes = [IsManager]
+            print('auth')
 
-        return [permission() for permission in permission_classes]
+        return [
+            permission() for permission in permission_classes]
 
     def get_queryset(self):
         if self.action in ["list", "retrieve"]:
@@ -141,24 +144,42 @@ class ProjectViewset(viewsets.ModelViewSet):
         serrializer = TaskSerializer(tasks, many=True)
         return Response(serrializer.data)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def document(self, request, pk):
         instance = self.get_object()
-        documents = Document.objects.filter(project=instance)
-        page = self.paginate_queryset(documents)
-        if page is not None:
-            serrializer = DocumentSerializer(page, many=True)
-            return self.get_paginated_response(serrializer.data)
+        print(request.user)
 
-        serrializer = DocumentSerializer(documents, many=True)
-        return Response(serrializer.data)
+        if not request.user.is_authenticated:
+            return Response(
+                {"status": False, "message": "Authentication required"},
+                status.HTTP_401_UNAUTHORIZED,
+            )
+
+        profile = Profile.objects.get(user=request.user)
+        members = instance.team_members.all()
+
+        if profile.role == "MA" or profile in members:
+            documents = Document.objects.filter(project=instance)
+            page = self.paginate_queryset(documents)
+            if page is not None:
+                serrializer = DocumentSerializer(page, many=True)
+                return self.get_paginated_response(serrializer.data)
+
+            serrializer = DocumentSerializer(documents, many=True)
+            return Response(serrializer.data)
+
+        else:
+            return Response(
+                {"status": False, "message": "You don't have access rights"},
+                status.HTTP_403_FORBIDDEN,
+            )
 
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list", "retrieve", "comment"]:
             permission_classes = [IsAuthenticated]
 
         else:
