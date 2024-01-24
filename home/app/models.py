@@ -87,8 +87,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         Profile, on_delete=models.CASCADE, related_name="comments", null=True
     )
-    created_at = models.DateTimeField(
-        default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     task = models.ForeignKey(
         Task, on_delete=models.CASCADE, related_name="comments", null=True
     )
