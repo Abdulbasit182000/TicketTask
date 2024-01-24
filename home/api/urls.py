@@ -1,5 +1,5 @@
-from app.views import (CommentViewSet, DocumentViewSet, ProjectViewset,
-                       RegisterAPI, TaskViewSet)
+from app.views import (CommentViewSet, DocumentViewSet, ProfileViewSet,
+                       ProjectViewset, RegisterAPI, TaskViewSet)
 from django.urls import include, path
 from drf_spectacular.views import (SpectacularAPIView, SpectacularRedocView,
                                    SpectacularSwaggerView)
@@ -12,7 +12,7 @@ router.register(r"projects", ProjectViewset, basename="project")
 router.register(r"tasks", TaskViewSet, basename="task")
 router.register(r"documents", DocumentViewSet, basename="document")
 router.register(r"comments", CommentViewSet, basename="comment")
-
+router.register(r"profiles", ProfileViewSet, basename="profile")
 
 urlpatterns = [
     path("", include(router.urls)),

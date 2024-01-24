@@ -70,10 +70,17 @@ class RegisterSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
+        depth = 1
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ["title", "description", "team_members"]
+        fields = ["id", "title", "description", "team_members"]
 
 
 class TaskSerializer(serializers.ModelSerializer):

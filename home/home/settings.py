@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-19-3-5pv8z4q13s&@34d^bv$noj)xkhsvbz)+0%(nzl3!wa)@n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     "debug_toolbar",
     'drf_spectacular',
+    'corsheaders',
     # 'django_nose',
 ]
 
@@ -55,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'home.urls'
@@ -162,3 +164,7 @@ SPECTACULAR_SETTINGS = {
 }
 
 COVERAGE_REPORT_HTML_OUTPUT_DIR = 'htmlcov'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
